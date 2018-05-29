@@ -4,7 +4,6 @@
 int main(void)
 {
 	float i = 0;
-	printf("Enter an float point value: ");
 	scanf("%f", &i );
 	if(i == 0)
 	{
