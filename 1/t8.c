@@ -17,7 +17,7 @@ int main(void)
 	for(int y = 0; y < (b-2); y++)
 	{
 		printf("#");
-		for(int d = 0; d < (b-2); d++)
+		for(int d = 0; d < (w-2); d++)
 		{
 			printf(".");
 		}
