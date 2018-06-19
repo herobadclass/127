@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 				if(result == 0)
 				{
 					memset(&word[0], 0, sizeof(word));
-					strcpy(word, "CENCORED");
+					strcpy(word, "CENSORED");
 					break;
 				}
 			}
