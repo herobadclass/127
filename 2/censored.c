@@ -4,8 +4,9 @@
 int main(int argc, char* argv[])
 {
 	int c;
-	char word[128];
+	char word[128] = {0};
 	int i = 0;
+	int result;
 	while((c=getchar()) != EOF)
 	{
 		if(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '\'')
@@ -17,11 +18,12 @@ int main(int argc, char* argv[])
 		{
 			for(int j = 1; j < argc; j++)
 			{
-				char* result = strstr(word, argv[j]);
-				if(result != NULL)
+				result = strcmp(word, argv[j]);
+				if(result == 0)
 				{
 					memset(&word[0], 0, sizeof(word));
-					strcpy(word, "CENCORED");
+					strcpy(word, "CENSORED");
+					break;
 				}
 			}
 			printf("%s%c",word,c);
