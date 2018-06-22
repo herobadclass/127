@@ -48,6 +48,13 @@ void zero( uint8_t array[],
 	   unsigned int rows )
 {
   // your code here.
+	for(int y = 0; y < rows; y++)
+	{
+		for(int x = 0; x < cols; x++)
+		{
+			set_pixel(array, cols, rows, x, y, 0);
+		}
+	}
 }
 
 // Returns a pointer to a freshly allocated array that contains the
@@ -59,7 +66,20 @@ uint8_t* copy( const uint8_t array[],
            unsigned int rows )
 {
   // your code here
-  return NULL;
+	uint8_t* cp = malloc(cols * rows * sizeof(uint8_t));
+	if(cp == NULL)
+	{
+	  return NULL;
+	}
+	for(int y = 0; y < rows; y++)
+	{
+		for(int x = 0; x < cols; x++)
+		{
+			uint8_t color = get_pixel(array, cols, rows, x, y);
+			set_pixel(cp, cols, rows, x, y, color);
+		}
+	}
+	return cp;
 }
 
 
@@ -76,8 +96,16 @@ uint8_t min( const uint8_t array[],
 	     unsigned int cols, 
 	     unsigned int rows )
 {
-  // your code here
-  return 0;
+	// your code here
+	uint8_t minium = array[0];
+	for(int i = 1; i < cols * rows; i ++)
+	{
+		if(array[i] < minium)
+		{
+			minium = array[i];
+		}
+	}
+	return minium;
 }
 
 // Return the lightest color that appears in the array; i.e. the
@@ -86,8 +114,16 @@ uint8_t max( const uint8_t array[],
 		 unsigned int cols, 
 		 unsigned int rows )
 {
-  // your code here
-  return 0;
+	// your code here
+  	uint8_t maximum = array[0];
+	for(int i = 1; i < cols * rows; i ++)
+	{
+		if(array[i] > maximum)
+		{
+			maximum = array[i];
+		}
+	}
+	return maximum;
 }
 
 // TASK 2
@@ -99,7 +135,14 @@ void replace_color(  uint8_t array[],
 		     uint8_t pre_color,
 		     uint8_t post_color )
 {
-  // your code here
+	// your code here
+	for(int i = 0; i < cols * rows; i ++)
+	{
+		if(array[i] == pre_color)
+		{
+			array[i] = post_color;
+		}
+	}
 }
 
 /* TASK 3  - two functions */
@@ -110,7 +153,17 @@ void flip_horizontal( uint8_t array[],
               unsigned int cols, 
               unsigned int rows )
 {
-  // your code here
+	// your code here
+	uint8_t temp;
+	for(int y = 0; y < rows; y ++)
+	{
+		for(int x = 0; x < cols/2; x ++)
+		{
+			temp = array[y*cols+x];
+			array[y*cols+x] = array[y*cols+cols-x];
+			array[y*cols+cols-x] = temp;
+		}
+	}	
 }
 
 // flip the image top-to-bottom.
@@ -119,6 +172,16 @@ void flip_vertical( uint8_t array[],
             unsigned int rows )
 {
     // your code here
+	uint8_t temp;
+	for(int x = 0; x < cols; x ++)
+	{
+		for(int y = 0; y < rows/2; y++)
+		{
+			temp = array[y*cols+x];
+			array[y*cols+x] = array[cols*(rows-1)-cols*y+x];
+			array[cols*(rows-1)-cols*y+x] = temp;
+		}
+	}
 }
 
 /* TASK 4 */
@@ -135,6 +198,18 @@ int locate_color(  const uint8_t array[],
 		   unsigned int *y )
 {
     // your code here
+	for(int i = 0; i < rows; i ++)
+	{
+		for(int j= 0; j <cols; j ++)
+		{
+			if(array[i*cols+j] == color)
+			{
+				*y = j;
+				*x = i;
+				return 1;
+			}
+		}
+	}
     return 0;
 }
 
@@ -148,6 +223,13 @@ void invert( uint8_t array[],
          unsigned int rows )
 {
     // your code here
+	for(int i = 0; i < rows; i ++)
+	{
+		for(int j= 0; j <cols; j ++)
+		{
+			array[i*cols+j] = 255 - array[i*cols+j];
+		}
+	}
 }
 
 /* TASK 6 */
@@ -160,7 +242,18 @@ void scale_brightness( uint8_t array[],
             unsigned int rows,
             double scale_factor )
 {
-  // your code here
+	// your code here
+	for(int i = 0; i < rows; i ++)
+	{
+		for(int j= 0; j <cols; j ++)
+		{
+			array[i*cols+j] = array[i*cols+j] * scale_factor;
+			if(array[i*cols+j] > 255)
+			{
+				array[i*cols+j] = 255;
+			}
+		}
+	}
 }
 
 
@@ -173,7 +266,17 @@ void normalize( uint8_t array[],
         unsigned int cols,
         unsigned int rows )
 {
-    // your code here
+	// your code here
+	int mi = min(array, cols, rows);
+	int ma = max(array, cols, rows);
+	for(int i = 0; i < cols*rows; i++)
+	{
+		array[i] = array[i] - mi;
+	}
+	for(int i = 0; i <cols*rows; i++)
+	{
+		array[i] = round(array[i]*255/(ma-mi));
+	}
 }
 
 /* TASK 8 */
@@ -188,8 +291,21 @@ uint8_t* half( const uint8_t array[],
 	       unsigned int cols,
 	       unsigned int rows )
 {
-  // your code here
-  return NULL;
+	// your code here
+	uint8_t* new_array = malloc(sizeof(uint8_t)*(cols/2)*(rows/2));
+	for(int y = 0; y < rows/2; y++)
+	{
+		for(int x = 0; x < cols/2; x++)
+		{
+			int temp1 = get_pixel(array, cols,rows,2*x,2*y);
+            int temp2 = get_pixel(array, cols,rows,2*x+1,2*y);
+            int temp3 = get_pixel(array, cols,rows,2*x,2*y+1);
+            int temp4 = get_pixel(array, cols,rows,2*x+1,2*y+1);
+			int average = round((temp1+temp2+temp3+temp4)/4.0);
+			set_pixel(new_array,cols/2,rows/2,x,y,average);
+		}
+	}
+	return NULL;
 }
 
 
@@ -230,7 +346,24 @@ void region_set( uint8_t array[],
          unsigned int bottom,
          uint8_t color )
 {
-    // your code here
+	// your code here
+	assert(left<= right);
+    assert(top <=bottom);
+    assert(top>=0);
+    assert(left>=0);
+    assert(bottom<=rows);
+    assert(right<=cols);
+	
+	if ((top!=bottom) && (right!= left))
+	{
+		for (int y = top; y < bottom; y++)
+		{
+			for (int x = left; x < right; x++)
+			{
+				set_pixel(array, cols, rows, x, y, color); 
+			}
+		}
+	}
 }
 
 /* TASK 10 */
@@ -247,7 +380,29 @@ unsigned long int region_integrate( const uint8_t array[],
                     unsigned int bottom )
 {
     // your code here
-    return 0;
+	assert(left<= right);
+    assert(top <=bottom);
+    assert(top>=0);
+    assert(left>=0);
+    assert(bottom<=rows);
+    assert(right<=cols);
+	
+	long int sum = 0;
+	if ((top==bottom) || (right== left))
+	{
+		return sum;
+	}
+	else
+	{
+		for (int y = top; y < bottom; y++)
+		{
+			for (int x = left; x < right; x++)
+			{
+				sum = sum + get_pixel(array, cols, rows, x, y);
+			}
+		}
+	}
+    return sum;
 }
 
 /* TASK 11 */
@@ -265,6 +420,32 @@ uint8_t* region_copy( const uint8_t array[],
               unsigned int bottom )
 {
     // your code here
+	assert(left<= right);
+    assert(top <=bottom);
+    assert(top>=0);
+    assert(left>=0);
+    assert(bottom<=rows);
+    assert(right<=cols);
+	
+	if ((top==bottom) || (right== left))
+	{
+		return NULL;
+	}
+	else
+	{
+		int new_cols = right-left;
+		int new_rows = bottom - top;
+		uint8_t* new_array = malloc(sizeof(uint8_t)*(new_cols)*(new_rows));
+		for (int y = top; y < bottom; y++)
+		{
+			for (int x = left; x < right; x++)
+			{
+				uint8_t temp = get_pixel(array, cols, rows,x,y);
+				set_pixel(new_array,new_cols,new_rows,x-left,y-top,temp);
+			}
+		}
+		return new_array;
+	}
     return NULL;
 }
 
