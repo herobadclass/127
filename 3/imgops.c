@@ -154,14 +154,16 @@ void flip_horizontal( uint8_t array[],
               unsigned int rows )
 {
 	// your code here
-	uint8_t temp;
+	uint8_t temp1;
+	uint8_t temp2;
 	for(int y = 0; y < rows; y ++)
 	{
 		for(int x = 0; x < cols/2; x ++)
 		{
-			temp = array[y*cols+x];
-			array[y*cols+x] = array[y*cols+cols-x];
-			array[y*cols+cols-x] = temp;
+			temp1 = get_pixel(array, cols,rows,x,y);
+			temp2 = get_pixel(array,cols,rows,cols-x-1,y);
+			set_pixel(array,cols,rows,x,y,temp2);
+			set_pixel(array,cols,rows,cols-x-1,y,temp1);
 		}
 	}	
 }
@@ -204,8 +206,8 @@ int locate_color(  const uint8_t array[],
 		{
 			if(array[i*cols+j] == color)
 			{
-				*y = j;
-				*x = i;
+				*y = i;
+				*x = j;
 				return 1;
 			}
 		}
@@ -243,15 +245,15 @@ void scale_brightness( uint8_t array[],
             double scale_factor )
 {
 	// your code here
-	for(int i = 0; i < rows; i ++)
+	for(int i = 0; i < rows*cols; i ++)
 	{
-		for(int j= 0; j <cols; j ++)
+		if(array[i]*scale_factor > 255)
 		{
-			array[i*cols+j] = array[i*cols+j] * scale_factor;
-			if(array[i*cols+j] > 255)
-			{
-				array[i*cols+j] = 255;
-			}
+			array[i] = 255;
+		}
+		else
+		{
+			array[i] = round(array[i] * scale_factor);
 		}
 	}
 }
@@ -271,11 +273,7 @@ void normalize( uint8_t array[],
 	int ma = max(array, cols, rows);
 	for(int i = 0; i < cols*rows; i++)
 	{
-		array[i] = array[i] - mi;
-	}
-	for(int i = 0; i <cols*rows; i++)
-	{
-		array[i] = round(array[i]*255/(ma-mi));
+		array[i] = round((255.0/(ma-mi))*(array[i] - mi));
 	}
 }
 
@@ -305,7 +303,7 @@ uint8_t* half( const uint8_t array[],
 			set_pixel(new_array,cols/2,rows/2,x,y,average);
 		}
 	}
-	return NULL;
+	return new_array;
 }
 
 
