@@ -155,7 +155,7 @@ intarr_result_t intarr_find( intarr_t* ia, int target, int* i )
 	{
 		for(int j = 0; j < ia->len; j++)
 		{
-			if(ia->data[j] == *i && i != NULL)
+			if(ia->data[j] == target && i != NULL)
 			{
 				*i = j;
 				return INTARR_OK;
@@ -198,7 +198,11 @@ intarr_result_t intarr_pop( intarr_t* ia, int* i )
 	{
 		return INTARR_BADARRAY;
 	}
-	else if(i != NULL && ia->data != NULL)
+	else if(ia->len == 0 && ia->data[0] == 0)
+	{
+		return INTARR_BADINDEX;
+	}
+	else if(i != NULL)
 	{
 		*i = ia->data[ia->len-1];
 		ia->data = realloc(ia->data,sizeof(int)*ia->len-1);
@@ -262,7 +266,7 @@ intarr_t* intarr_copy_subarray( intarr_t* ia,
     {
 		subarray->len = last - first + 1;
 		subarray->data = malloc(sizeof(int)*(last - first + 1));
-		for(int i = first; i < last; i ++)
+		for(int i = first; i < last+1; i ++)
 		{
 			subarray->data[i-first] = ia->data[i];
 		}
