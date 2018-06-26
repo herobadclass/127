@@ -198,14 +198,14 @@ intarr_result_t intarr_pop( intarr_t* ia, int* i )
 	{
 		return INTARR_BADARRAY;
 	}
-	else if(ia->len == 0 && ia->data[0] == 0)
+	if(ia->len == 0)
 	{
 		return INTARR_BADINDEX;
 	}
 	else if(i != NULL)
 	{
 		*i = ia->data[ia->len-1];
-		ia->data = realloc(ia->data,sizeof(int)*ia->len-1);
+		ia->data[ia->len-1] = 0;
 		ia->len = ia->len-1;
 		return INTARR_OK;
 	}
