@@ -72,7 +72,7 @@ intarr_t* intarr_load_json( const char* filename )
 	while(!feof(f))
 	{
 		char c = getc(f);
-		if(c == ' ' || c == '\n')
+		if(c == ',')
 		{
 			len = len + 1;
 		}
@@ -84,8 +84,8 @@ intarr_t* intarr_load_json( const char* filename )
     	{
 	        return NULL;
 	}
-	len = len - 1;
-	if(len <= 0)
+	len = len + 1;
+	if(len == 0)
 	{
 		arr->len = 0;
 		arr->data = NULL;
