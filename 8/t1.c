@@ -17,8 +17,8 @@ void point_array_reset( point_array_t* pa ){
 // Append a point to the end of an array. If successful, return 0,
 // else return 1;
 int point_array_append( point_array_t* pa, point_t* p ){
-	if(p == NULL){
-		return 0;
+	if(p == NULL || pa == NULL){
+		return 1;
 	}
 
 	pa->len = pa->len + 1;
@@ -36,8 +36,8 @@ int point_array_append( point_array_t* pa, point_t* p ){
 // Remove the point at index i from the array, reducing the size of
 // the array by one. The order of points in the array may change.
 // Return 0 on success and 1 on failure.
-int point_array_remove( point_array_t* pa, unsigned int i ){
-	if(i >= pa->len){
+int point_array_remove( point_array_t* pa, unsigned int i ){	
+	if(i >= pa->len || pa == NULL){
 		return 1;
 	}
 
