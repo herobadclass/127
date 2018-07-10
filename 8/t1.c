@@ -4,7 +4,6 @@
 // Safely initalize an empty array structure.
 void point_array_init( point_array_t* pa ){
 	pa->len = 0;
-	pa->reserved = 0;
 	pa->points = NULL;
 }
 
@@ -12,7 +11,6 @@ void point_array_init( point_array_t* pa ){
 // necessary.
 void point_array_reset( point_array_t* pa ){
 	pa->len = 0;
-	pa->reserved = 0;
 	free(pa->points);
 }
 
