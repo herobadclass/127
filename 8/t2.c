@@ -24,10 +24,10 @@ int point_array_append( point_array_t* pa, point_t* p ){
 	}
 
 	if(pa->len == pa->reserved){
-		pa->reserved = pa->reserved * 2;
+		pa->reserved = (pa->reserved + 1) * 2;
 		pa->points = realloc(pa->points, pa->reserved*sizeof(point_t));
 	}
-
+	pa->len = pa->len + 1;
 	pa->points[pa->len-1].x = p->x;
 	pa->points[pa->len-1].y = p->y;
 	pa->points[pa->len-1].z = p->z;
