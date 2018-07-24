@@ -62,7 +62,7 @@ int intarr_save_json( intarr_t* ia, const char* filename )
 */
 intarr_t* intarr_load_json( const char* filename )
 {
-	FILE* f = fopen(filename, "r");
+	FILE* f = fopen("t2test", "r");
 	if(f == NULL)
 	{
 		return NULL;
@@ -78,11 +78,13 @@ intarr_t* intarr_load_json( const char* filename )
 		}
 	}
 	fseek(f, 0, SEEK_SET);
+	
 	intarr_t* arr = malloc(sizeof(intarr_t));
 	if (arr == NULL)
     	{
 	        return NULL;
 	}
+
 	if(len == 0)
 	{
 		arr->len = 0;
@@ -102,7 +104,6 @@ intarr_t* intarr_load_json( const char* filename )
 		}
 		arr->data[i] = j;
 	}
-	fseek(f, 0, SEEK_SET);
 	fclose(f);
 	return arr;
 }
