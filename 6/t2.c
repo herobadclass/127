@@ -49,6 +49,7 @@ int intarr_save_json( intarr_t* ia, const char* filename )
 	}
 	fprintf(f, " ]");
 	fclose(f);
+	
 	return 0;
 }
 	
@@ -62,48 +63,50 @@ int intarr_save_json( intarr_t* ia, const char* filename )
 */
 intarr_t* intarr_load_json( const char* filename )
 {
-	FILE* f = fopen(filename, "r");
-	if(f == NULL)
-	{
-		return NULL;
-	}
-
-	int len = 0;
-	while(!feof(f))
-	{
-		char c = getc(f);
-		if(c == ',')
+	if (filename == NULL)
+    {
+        return NULL;
+    }
+    FILE *f;
+    f = fopen(filename, "r+");
+    if (f == NULL)
+    {
+        return NULL;
+    }
+	
+	char c;
+    int len = 0;
+    while(!feof(f))
+    {
+		c = getc(f);
+        if (c == ',')
 		{
-			len = len + 1;
-		}
-	}
-	fseek(f, 0, SEEK_SET);
+            len ++;
+        }
+    }
+    fseek(f, 0, SEEK_SET);
 	
-	intarr_t* arr = malloc(sizeof(intarr_t));
-	if (arr == NULL)
-    	{
-	        return NULL;
-	}
-
-	if(len == 0)
-	{
-		arr->len = 0;
-		arr->data = NULL;
-		return arr;
-	}
-	
-	arr->data = malloc(sizeof(int)*len);
-	arr->len = len + 1;
-	
-	int j;
-	for(int i = 0; i < arr->len; i ++)
-	{
-		while(fscanf(f, "%d", &j) != 1)
-		{
-			fseek(f, 1, SEEK_CUR);
-		}
-		arr->data[i] = j;
-	}
-	fclose(f);
-	return arr;
+	intarr_t *arr = malloc(sizeof(intarr_t));
+    if (len == 0)
+    {
+        arr->len = 0;
+        arr->data = NULL;
+        return arr;
+    }
+    arr->len = len+1;
+    arr->data = malloc(sizeof(int)*arr->len);
+    
+	int j = 0;
+    for(int i = 0; i < arr->len; i++)
+    {
+        while (fscanf(f, "%d",&j) != 1)
+        {
+            fseek(f, 1, SEEK_CUR);
+            
+        }
+        arr->data[i] = j;
+    }
+    fclose(f);
+    
+    return arr;
 }
