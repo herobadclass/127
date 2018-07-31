@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <image.hpp>
+#include "image.hpp"
 using namespace std;
 Image::Image()
 {
@@ -25,7 +25,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 	{
 		delete[] pixels;
 	}
-	uint8_t pixels[width*height];
+	pixels = new uint8_t[width*height];
 	if(pixels == NULL)
 	{
 		return 1;
@@ -42,7 +42,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 error code. If (x,y) is not a valid pixel, the call fails and the image does not change.*/
 int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 {
-	if(x > cols || y > rows)
+	if(x >= cols || y >= rows)
 	{
 		return 1;
 	}
@@ -53,10 +53,10 @@ int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 by colorp. Returns 0 on success, else a non-zero error code. */
 int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 {
-	if(x > cols || y > rows)
+	if(x >= cols || y >= rows)
 	{
 		return 1;
 	}
-	colorp = pixels[x+y*cols];
+	*colorp = pixels[x+y*cols];
 	return 0;
 }
