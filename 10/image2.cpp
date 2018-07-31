@@ -77,7 +77,7 @@ int Image::save( const char* filename )
 		f.close();
 		return 0;
 	}
-	else if(cols == 0 || rows == 0);
+	else if(cols == 0 || rows == 0)
 	{
 		f.close;
 		return 1;
@@ -93,7 +93,7 @@ int Image::save( const char* filename )
 			fp << endl;
 		}
 	}
-	f.close;
+	f.close();
 	return 0;
 }
 /* Load an image from the file filename, replacing the current
@@ -114,9 +114,9 @@ int Image::load( const char* filename )
 	int pxl;
 	for(int i = 0, i < cols*rows; i ++)
 	{
-		fp >> pxl;
-		pixels[i] = pix;
+		f >> pxl;
+		pixels[i] = pxl;
 	}
-	fp.close();
+	f.close();
 }
 	
