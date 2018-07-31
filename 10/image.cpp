@@ -16,7 +16,6 @@ Image::~Image()
 		delete[] pixels; 
     }
 }
- 
 /* Changes the size of an image, allocating memory as necessary, and
 setting all pixels to fillcolor. Returns 0 on success, or a non-zero error code.*/ 
 int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
