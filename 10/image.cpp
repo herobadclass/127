@@ -41,7 +41,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 error code. If (x,y) is not a valid pixel, the call fails and the image does not change.*/
 int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 {
-	if(x >= cols || y >= rows || x = NULL || y = NULL)
+	if(x >= cols || y >= rows || x == NULL || y == NULL)
 	{
 		return 1;
 	}
@@ -52,7 +52,7 @@ int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 by colorp. Returns 0 on success, else a non-zero error code. */
 int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 {
-	if(x >= cols || y >= rows || x = NULL || y = NULL)
+	if(x >= cols || y >= rows || x == NULL || y == NULL)
 	{
 		return 1;
 	}
