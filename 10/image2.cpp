@@ -43,7 +43,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 error code. If (x,y) is not a valid pixel, the call fails and the image does not change.*/
 int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 {
-	if(x >= cols || y >= rows)
+	if(x >= cols || y >= rows || x == NULL || y == NULL)
 	{
 		return 1;
 	}
@@ -54,7 +54,7 @@ int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 by colorp. Returns 0 on success, else a non-zero error code. */
 int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 {
-	if(x >= cols || y >= rows)
+	if(x >= cols || y >= rows || x == NULL || y == NULL)
 	{
 		return 1;
 	}
@@ -79,7 +79,7 @@ int Image::save( const char* filename )
 	}
 	else if(cols == 0 || rows == 0)
 	{
-		f.close;
+		f.close();
 		return 1;
 	}
 	else
@@ -88,9 +88,9 @@ int Image::save( const char* filename )
 		{
 			for(int j=0; j < cols; j++)
 			{
-				fp << (int)pixels[i*cols+j] << " ";
+				f << (int)pixels[i*cols+j] << " ";
 			}
-			fp << endl;
+			f << endl;
 		}
 	}
 	f.close();
@@ -112,11 +112,10 @@ int Image::load( const char* filename )
 	pixels = new uint8_t[cols*rows];
 	
 	int pxl;
-	for(int i = 0, i < cols*rows; i ++)
+	for(int i = 0; i < cols*rows; i ++)
 	{
 		f >> pxl;
 		pixels[i] = pxl;
 	}
 	f.close();
 }
-	
