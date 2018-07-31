@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <fstream>
-#include <image2.hpp>
+#include "image2.hpp"
 using namespace std;
 Image::Image()
 {
@@ -43,7 +43,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 error code. If (x,y) is not a valid pixel, the call fails and the image does not change.*/
 int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 {
-	if(x > cols || y > rows)
+	if(x >= cols || y >= rows)
 	{
 		return 1;
 	}
@@ -54,7 +54,7 @@ int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 by colorp. Returns 0 on success, else a non-zero error code. */
 int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 {
-	if(x > cols || y > rows)
+	if(x >= cols || y >= rows)
 	{
 		return 1;
 	}
@@ -71,7 +71,7 @@ int Image::save( const char* filename )
 		return 1;
 	}
 	fstream f;
-	f.open(filename);
+	f.open(filename, fstream::out);
 	if(cols == 0 && rows == 0)
 	{
 		f.close();
@@ -84,11 +84,13 @@ int Image::save( const char* filename )
 	}
 	else
 	{
-		for(int i = 0; i < rows*cols; i++)
+		for(int i=0; i < rows; i++)
 		{
-				f << (int)pixels[i] <<" ";
+			for(int j=0; j < cols; j++)
+			{
+				fp << (int)pixels[i*cols+j] << " ";
 			}
-			f << endl;
+			fp << endl;
 		}
 	}
 	f.close;
@@ -104,12 +106,12 @@ int Image::load( const char* filename )
 		return 1;
 	}
 	fstream f;
-	f.open(filename);
+	f.open(filename, ios::in);
 	
 	delete[] pixels;
 	pixels = new uint8_t[cols*rows];
 	
-	int pxl
+	int pxl;
 	for(int i = 0, i < cols*rows; i ++)
 	{
 		fp >> pxl;
