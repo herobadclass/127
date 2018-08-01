@@ -45,7 +45,7 @@ int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 	{
 		return 1;
 	}
-	pixels[x+y*cols] = color;
+	pixels[y*cols+x] = color;
 	return 0;
 }
 /* Gets the color of the pixel at (x,y) and stores at the address pointed to 
@@ -56,6 +56,6 @@ int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 	{
 		return 1;
 	}
-	*colorp = pixels[x+y*cols];
+	*colorp = pixels[y*cols+x];
 	return 0;
 }
