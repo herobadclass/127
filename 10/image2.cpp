@@ -58,7 +58,7 @@ int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 	{
 		return 1;
 	}
-	*colorp = pixels[x+y*cols];
+	*colorp = pixels[y*cols+x];
 	return 0;
 }
 /* Saves the image in the file filename. In a format that can be
@@ -107,6 +107,55 @@ int Image::load( const char* filename )
 	}
 	fstream f;
 	f.open(filename, ios::in);
+	
+	f.seekg (0, fp.end);
+    int length = f.tellg();
+    f.seekg (0, fp.beg);
+	if (length == 0)
+	{
+ 		cols = 0;
+ 		rows = 0;
+ 		pixels = NULL;
+ 		fp.close();
+    	return 0;
+ 	}
+	int total;
+	while (!f.eof())
+	{
+		f >> pix;
+		total ++;
+	}
+	total --;
+	f.clear();
+	f.seekg (0, f.beg);	
+	
+	char line[2000];
+	int imgrows = 0;
+	while(!f.eof())
+	{
+		f.getline(line,2000,'\n');
+		rows ++;
+	}
+	imgrows --;
+	f.clear();
+	f.seekg (0, f.beg);	
+	
+	if(imgrows == 0)
+	{
+		cols = 0;
+		rows = 0;
+		if(pixels != NULL)
+		{
+			delete[] pixels;
+			pixels = NULL;
+		}
+		fp.close();
+		return 0;
+	}
+	else{
+		cols = total/imgrows;
+		rows = imgrows;
+	}
 	
 	delete[] pixels;
 	pixels = new uint8_t[cols*rows];
