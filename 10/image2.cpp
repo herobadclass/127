@@ -108,21 +108,22 @@ int Image::load( const char* filename )
 	fstream f;
 	f.open(filename, ios::in);
 	
-	f.seekg (0, fp.end);
+	f.seekg (0, f.end);
     int length = f.tellg();
-    f.seekg (0, fp.beg);
+    f.seekg (0, f.beg);
 	if (length == 0)
 	{
  		cols = 0;
  		rows = 0;
  		pixels = NULL;
- 		fp.close();
+ 		f.close();
     	return 0;
  	}
 	int total;
+	int pxl;
 	while (!f.eof())
 	{
-		f >> pix;
+		f >> pxl;
 		total ++;
 	}
 	total --;
@@ -149,7 +150,7 @@ int Image::load( const char* filename )
 			delete[] pixels;
 			pixels = NULL;
 		}
-		fp.close();
+		f.close();
 		return 0;
 	}
 	else{
@@ -160,7 +161,6 @@ int Image::load( const char* filename )
 	delete[] pixels;
 	pixels = new uint8_t[cols*rows];
 	
-	int pxl;
 	for(int i = 0; i < cols*rows; i ++)
 	{
 		f >> pxl;
