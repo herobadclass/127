@@ -24,7 +24,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 	{
 		delete[] pixels;
 	}
-	pixels = new uint8_t[width*height];
+	uint8_t pixels[width*height];;
 	if(pixels == NULL)
 	{
 		return 1;
@@ -41,21 +41,21 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 error code. If (x,y) is not a valid pixel, the call fails and the image does not change.*/
 int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 {
-	if(x >= cols || y >= rows || x == NULL || y == NULL)
+	if(x < cols && y < rows && x >= 0 && y >= 0)
 	{
-		return 1;
+		pixels[y*cols+x] = color;
+		return 0;
 	}
-	pixels[y*cols+x] = color;
 	return 0;
 }
 /* Gets the color of the pixel at (x,y) and stores at the address pointed to 
 by colorp. Returns 0 on success, else a non-zero error code. */
 int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 {
-	if(x >= cols || y >= rows || x == NULL || y == NULL)
+	if(x < cols && y < rows && x >= 0 && y >= 0)
 	{
-		return 1;
+		*colorp = pixels[y*cols+x];
+		return 0;
 	}
-	*colorp = pixels[y*cols+x];
-	return 0;
+	return 0
 }
