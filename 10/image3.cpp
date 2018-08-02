@@ -29,7 +29,7 @@ int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
  	pixels = new uint8_t*[height];
 	for(int i = 0; i < height; i++)
 	{
-		pixels[i] = new uint8_t*[width];
+		pixels[i] = new uint8_t[width];
 		for(int j = 0; j < width; j++)
 		{
 			pixels[i][j] = fillcolor;
@@ -130,12 +130,12 @@ int Image::load( const char* filename )
 	f.clear();
 	f.seekg (0, f.beg);	
 	
-	char line[2000];
+	char line[1500];
 	int imgrows = 0;
 	while(!f.eof())
 	{
-		f.getline(line,2000,'\n');
-		rows ++;
+		f.getline(line,1500,'\n');
+		imgrows ++;
 	}
 	imgrows --;
 	f.clear();
@@ -159,14 +159,10 @@ int Image::load( const char* filename )
 	}
 	
 	delete[] pixels;
-	pixels = new uint8_t*[height];
-	for(int i = 0; i < height; i++)
+	pixels = new uint8_t*[rows];
+	for(int i = 0; i < rows; i++)
 	{
-		pixels[i] = new uint8_t*[width];
-		for(int j = 0; j < width; j++)
-		{
-			pixels[i][j] = fillcolor;
-		}
+		pixels[i] = new uint8_t[cols];
 	}
 	
 	for(int i = 0; i < rows; i ++)
