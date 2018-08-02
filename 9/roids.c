@@ -479,9 +479,9 @@ int shot_roid_hit( const shot_t* shot, const roid_t* roid )
     float y1 = roid->y - roid->height/2;
     float y2 = roid->y + roid->height/2;
 	
-	if((x >= x1 && x <= x2) || (x >= x1 && x <= x2-1) || (x >= x1+1 && x <= x2) || (x >= x1+1 && x <= x2-1))
+	if((x >= x1 && x <= x2) || (x >= x1 || x <= x2-1) || (x >= x1+1 || x <= x2) || (x >= x1+1 || x <= x2-1))
 	{
-		if((y >= y1 && y <= y2) || (y >= y1 && y <= y2+1) || (y >= y1-1 && y <= y2) || (y >= y1-1 && y <= y2+1))
+		if((y >= y1 && y <= y2) || (y >= y1 || y <= y2+1) || (y >= y1-1 || y <= y2) || (y >= y1-1 || y <= y2+1))
 		{
 			return 1;
 		}
