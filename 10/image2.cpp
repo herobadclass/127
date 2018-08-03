@@ -59,7 +59,7 @@ int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 		*colorp = pixels[y*cols+x];
 		return 0;
 	}
-	return 0
+	return 0;
 }
 /* Saves the image in the file filename. In a format that can be
 loaded by load().  Returns 0 on success, else a non-zero error
