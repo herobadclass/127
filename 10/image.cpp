@@ -57,5 +57,5 @@ int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 		*colorp = pixels[y*cols+x];
 		return 0;
 	}
-	return 0
+	return 0;
 }
