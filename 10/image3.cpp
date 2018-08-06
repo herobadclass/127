@@ -1,7 +1,10 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <fstream>
 #include "image3.hpp"
+#include <iostream>
+#include <fstream>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 using namespace std;
 Image::Image()
 {
@@ -12,106 +15,126 @@ Image::Image()
 
 Image::~Image()
 {
-	if( pixels != NULL ) 
+ 	if(pixels != NULL)
 	{
-		delete[] pixels; 
-    }
+ 		for(int i = 0; i < rows; i++)
+		{
+		    delete[] pixels[i];
+		}
+		delete [] pixels;
+ 	}
 }
-/* Changes the size of an image, allocating memory as necessary, and
-setting all pixels to fillcolor. Returns 0 on success, or a
-non-zero error code.*/ 
+
 int Image::resize( unsigned int width,  unsigned int height, uint8_t fillcolor )
 {
-	if (pixels != NULL)
+ 	if(pixels != NULL)
 	{
- 		delete[] pixels;
+ 		for (int i = 0; i < rows; i++)
+		{
+ 		    delete[] pixels[i];
+		}
+		delete [] pixels;
  	}
  	pixels = new uint8_t*[height];
 	for(int i = 0; i < height; i++)
 	{
-		pixels[i] = new uint8_t[width];
-		for(int j = 0; j < width; j++)
+	    pixels[i] = new uint8_t[width];
+	} 	
+ 	if(pixels == NULL)
+	{
+ 		return 1;
+ 	}
+ 	cols = width ;
+ 	rows = height ;
+ 	
+ 	for(int i = 0 ; i < rows ; i++)
+	{
+ 		for(int j = 0 ; j < cols ; j++)
 		{
-			pixels[i][j] = fillcolor;
-		}
-	}
-	cols = width;
- 	rows = height;
+ 			pixels[i][j] = fillcolor;
+ 		}
+ 	}
  	return 0;
-}
-/* Sets the color of the pixel at (x,y) to color. Returns 0 on success, else a non-zero 
-error code. If (x,y) is not a valid pixel, the call fails and the image does not change.*/
+}  
+
 int Image::set_pixel( unsigned int x, unsigned int y, uint8_t color )
 {
-	if(x < cols && y < rows && x >= 0 && y >= 0)
+	if(pixels == NULL)
+	{
+ 		return 1;
+ 	}
+ 	if(x < cols && y < rows && x >= 0 && y >= 0)
 	{
 		pixels[y][x] = color;
 		return 0;
 	}
 	return 1;
 }
-/* Gets the color of the pixel at (x,y) and stores at the address pointed to 
-by colorp. Returns 0 on success, else a non-zero error code. */
+  
+
 int Image::get_pixel( unsigned int x, unsigned int y, uint8_t* colorp )
 {
-	if(x < cols && y < rows && x >= 0 && y >= 0)
+ 	if (colorp == NULL || pixels == NULL)
+ 	{
+ 		return 1;
+ 	}
+ 	if(x < cols && y < rows && x >= 0 && y >= 0)
 	{
 		*colorp = pixels[y][x];
 		return 0;
 	}
 	return 1;
 }
-/* Saves the image in the file filename. In a format that can be
-loaded by load().  Returns 0 on success, else a non-zero error
-code. */
+
 int Image::save( const char* filename )
 {
-	if(filename == NULL)
+ 	if(filename == NULL)
 	{
-		return 1;
-	}
-	fstream f;
+ 		return 1;
+ 	}
+ 	fstream f;
 	f.open(filename, fstream::out);
-	if(cols == 0 && rows == 0)
+ 	if (!f.is_open())
 	{
-		f.close();
-		return 0;
-	}
-	else if(cols == 0 || rows == 0)
+ 		return 1;
+ 	}
+ 	if((rows == 0 && cols > 0) || (rows > 0 && cols == 0))
 	{
-		f.close();
 		return 1;
 	}
-	else
+ 	if(cols == 0 && rows == 0)
+	{		
+ 		f.close();
+ 		return 0;
+ 	}
+ 	for(int i=0; i < rows; i++)
 	{
-		for(int i = 0; i < rows; i++)
+ 		for(int j=0; j < cols; j++)
 		{
-			for(int j = 0; j < cols; j++)
-			{
-				f << (int)pixels[i][j] << " ";
-			}
-			f << endl;
-		}
-	}
-	f.close();
-	return 0;
+ 			f<<(int)pixels[i][j]<<" ";
+ 		}
+ 		f<<endl;
+ 	}
+    f.close();
+ 	return 0; 	 	
 }
-/* Load an image from the file filename, replacing the current
-image size and data. The file is in a format that was saved by
-save().  Returns 0 success, else a non-zero error code . */
 int Image::load( const char* filename )
 {
-	if(filename == NULL)
+ 	if(filename == NULL)
 	{
 		return 1;
 	}
 	fstream f;
-	f.open(filename, fstream::in);
-	
+	f.open(filename,ios::in);
+	if(!f.is_open())
+	{
+		return 1;
+	}
 	f.seekg (0, f.end);
     int length = f.tellg();
     f.seekg (0, f.beg);
-	if (length == 0)
+
+    if (length == 0)
 	{
  		cols = 0;
  		rows = 0;
@@ -119,59 +142,70 @@ int Image::load( const char* filename )
  		f.close();
     	return 0;
  	}
-	int total;
 	int pxl;
-	while (!f.eof())
+	int total = 0;
+	int lines = 0;
+	char line[1500];
+	while(!f.eof())
 	{
 		f >> pxl;
-		total ++;
+		total++;
 	}
-	total --;
+	total = total -1;	
 	f.clear();
-	f.seekg (0, f.beg);	
+	f.seekg (0, f.beg);
 	
-	char line[1500];
-	int imgrows = 0;
 	while(!f.eof())
 	{
 		f.getline(line,1500,'\n');
-		imgrows ++;
+		lines ++;
 	}
-	imgrows --;
+	lines = lines - 1;	
 	f.clear();
-	f.seekg (0, f.beg);	
-	
-	if(imgrows == 0)
+	f.seekg (0, f.beg);
+	if(lines == 0)
 	{
 		cols = 0;
 		rows = 0;
 		if(pixels != NULL)
 		{
-			delete[] pixels;
-			pixels = NULL;
-		}
+ 			for(int i = 0; i < rows; i++)
+			{
+		  	  delete[] pixels[i];
+			}
+			delete [] pixels;
+			pixels = NULL;	
+ 		}
 		f.close();
 		return 0;
 	}
-	else{
-		cols = total/imgrows;
-		rows = imgrows;
+	else
+	{
+		cols = total/lines;
+		rows = lines;	
 	}
-	
-	delete[] pixels;
+	if(pixels != NULL)
+	{
+ 			for(int i = 0; i < rows; i++)
+			{
+		  	  delete[] pixels[i];
+			}
+			delete [] pixels;
+ 	}		
+
 	pixels = new uint8_t*[rows];
+	for(int i = 0; i < rows; ++i)
+	{
+	    pixels[i] = new uint8_t[cols];
+	} 		
 	for(int i = 0; i < rows; i++)
 	{
-		pixels[i] = new uint8_t[cols];
-	}
-	
-	for(int i = 0; i < rows; i ++)
-	{
-		for(int j = 0; j < cols; j++)
+ 		for(int j = 0; j < cols; j++)
 		{
-			f >> pxl;
-			pixels[i][j] = pxl;
-		}
-	}
+ 			f >> pxl;
+ 			pixels[i][j] = pxl;
+ 		}
+ 	}
 	f.close();
-}
+	return 0;
+ }
